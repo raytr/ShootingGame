@@ -37,11 +37,10 @@ public enum MsgType {
             return LogoutMsg.decode(bytes);
         }
     },
-    CONTROLS(6){
+    PLAYER_INTENT(6){
         @Override
         public Message decode(byte[] bytes){
-            //TODO
-            return LogoutMsg.decode(bytes);
+            return PlayerIntentMsg.decode(bytes);
         }
     };
 

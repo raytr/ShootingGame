@@ -8,6 +8,10 @@ public abstract class Entity {
     protected double vy;
     protected double width = 100;
     protected double height = 100;
+    public void update(){
+        x += vx;
+        y += vy;
+    }
     public int getId(){
         return id;
     }

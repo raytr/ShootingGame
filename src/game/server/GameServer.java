@@ -32,9 +32,9 @@ public class GameServer {
         gl  = new GameLoop(new Runnable() {
             @Override
             public void run() {
-
-                //Draw players
-
+                for (Entity e : entityList){
+                    e.update();
+                }
             }
         },60);
         gl.start();
