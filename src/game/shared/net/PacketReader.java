@@ -1,6 +1,6 @@
 package game.shared.net;
 
-import game.shared.net.packets.*;
+import game.shared.net.messages.*;
 
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
@@ -26,23 +26,7 @@ public class PacketReader {
             byte[] msgBytes = new byte[size];
             bb.get(msgBytes, 0, size);
 
-            switch (msgType) {
-                case ACK:
-                    returnPacket.addMessage(AckMsg.decode(msgBytes));
-                    break;
-                case LOGIN:
-                    returnPacket.addMessage(LoginMsg.decode(msgBytes));
-                    break;
-                case LOGOUT:
-                    returnPacket.addMessage(LogoutMsg.decode(msgBytes));
-                    break;
-                case CONTROLS:
-                    break;
-                case GAME_STATE:
-                    break;
-                case CHAT_MESSAGE:
-                    break;
-            }
+            returnPacket.addMessage(msgType.decode(msgBytes));
         }
 
         return returnPacket;

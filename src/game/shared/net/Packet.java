@@ -1,6 +1,4 @@
-package game.shared.net.packets;
-
-import game.shared.net.PacketSuccessFailHandler;
+package game.shared.net;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;

@@ -1,7 +1,5 @@
 package game.shared.net;
 
-import game.shared.net.packets.Packet;
-
 import java.net.*;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,16 +10,16 @@ import java.util.concurrent.*;
 class UdpSender extends Thread {
     final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
     private volatile boolean stillRunning = true;
-    //Ids of the packets that we are waiting on acks for
+    //Ids of the messages that we are waiting on acks for
     //<id, Packet>
     private final Map<InetAddrSeqNumKey, Packet> awaitingAckIDs =
             Collections.synchronizedMap(new HashMap<InetAddrSeqNumKey, Packet>());
 
     private final BlockingQueue<Packet> queuedPackets = new LinkedBlockingQueue<>();
     private final DatagramSocket socket;
-    private final NetHandler nh;
+    private final NetManager nh;
 
-    UdpSender(NetHandler nh, DatagramSocket socket) {
+    UdpSender(NetManager nh, DatagramSocket socket) {
         this.nh = nh;
         this.socket = socket;
     }

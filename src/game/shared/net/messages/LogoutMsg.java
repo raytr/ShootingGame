@@ -1,4 +1,6 @@
-package game.shared.net.packets;
+package game.shared.net.messages;
+
+import game.shared.net.Message;
 
 import java.nio.ByteBuffer;
 

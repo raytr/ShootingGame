@@ -1,8 +1,5 @@
 package game.shared.net;
 
-import game.shared.net.packets.Message;
-import game.shared.net.packets.Packet;
-
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -10,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class NetHandler {
+public class NetManager {
     private int seqNum = (int) (Math.random() * ((999) + 1));
     private final UdpSender udpSender;
     private final UdpReceiver udpReceiver;
@@ -21,7 +18,7 @@ public class NetHandler {
     private List<Message> msgList;
 
     //Start as a server
-    public NetHandler(ReceivePacketHandler receivePacketHandler, int port) {
+    public NetManager(ReceivePacketHandler receivePacketHandler, int port) {
         this.receivePacketHandler = receivePacketHandler;
         try {
             socket = new DatagramSocket(port);
@@ -36,7 +33,7 @@ public class NetHandler {
     }
 
     //Start as a client
-    public NetHandler(ReceivePacketHandler receivePacketHandler, InetSocketAddress serverAddress) {
+    public NetManager(ReceivePacketHandler receivePacketHandler, InetSocketAddress serverAddress) {
         this.receivePacketHandler = receivePacketHandler;
         try {
             socket = new DatagramSocket();
@@ -100,7 +97,7 @@ public class NetHandler {
     }
 
     //Send messages in packet
-    //If there are too many, then divides into multiple packets automatically
+    //If there are too many, then divides into multiple messages automatically
     public Set<Integer> sendMessages(List<Message> msgList) {
         System.out.println("Attempting to write " + msgList.size() + " messages.");
         Set<Integer> seqNums = new HashSet<Integer>();
