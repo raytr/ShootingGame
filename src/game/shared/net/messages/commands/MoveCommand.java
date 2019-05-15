@@ -1,6 +1,5 @@
 package game.shared.net.messages.commands;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import game.shared.net.messages.Command;
 
 import java.nio.ByteBuffer;

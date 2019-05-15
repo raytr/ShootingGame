@@ -9,17 +9,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class PlayerTableView {
     private TableView tv;
 
+    @SuppressWarnings("unchecked")
     public PlayerTableView(ObservableList<Player> playerList){
         tv = new TableView();
 
-        TableColumn<String, Player> column1 = new TableColumn<>("Player ID:");
-        column1.setCellValueFactory(new PropertyValueFactory<>("playerId"));
+        TableColumn<String, Player> column1 = new TableColumn<String,Player>("Player ID:");
+        column1.setCellValueFactory(new PropertyValueFactory<String,Player>("playerId"));
         //tv.setStyle("-fx-opacity:1.0");
         //tv.setDisable(true);
 
         tv.setFocusTraversable(false);
-        TableColumn<String, Player> column2 = new TableColumn<>("Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<String, Player> column2 = new TableColumn<String,Player>("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<String,Player>("name"));
         tv.setSelectionModel(null);
         tv.getColumns().add(column1);
         tv.getColumns().add(column2);
