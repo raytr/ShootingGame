@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class Sprite {
-    private final double INTERP_CONSTANT = 0.9;
+    private final double INTERP_CONSTANT = 0.90;
     private String name = "test";
     private int id;
     private boolean goUp = false;
@@ -80,8 +80,12 @@ public class Sprite {
     }
 
     void draw(GraphicsContext gc) {
-        gc.setFill(Color.RED);
+        gc.setFill(Color.rgb(255, 0, 0, 0.2));
         gc.fillRect(x, y, width, height);
+
+        gc.setFill(Color.rgb(0, 0, 255, 0.2));
+        gc.fillRect(remoteX, remoteY, width, height);
+
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font ("Arial", 24));
         gc.fillText(name,x,y-10);
@@ -92,7 +96,6 @@ public class Sprite {
     }
 
     public void update(double dt) {
-        /*
         int[] netMove = new int[]{0,0};
 
         if (goUp) netMove[1] -= 1;
@@ -108,20 +111,19 @@ public class Sprite {
 
         vx*=0.9;
         vy*=0.9;
-         */
-        System.out.println("X0: "+x);
-        x = interpolate(dt,x,remoteX,0.02,50);
-        System.out.println("XF: "+x);
-        y = interpolate(dt,y,remoteY,0.02,50);
+        //System.out.println("X0: "+x);
+        x = interpolate(dt,x,remoteX,0.001,500);
+        //System.out.println("XF: "+x);
+        y = interpolate(dt,y,remoteY,0.001,500);
     }
     private double interpolate(double dt,double x0,double xf,double minThreshold,double maxThreshold){
-        System.out.println(dt);
+        //System.out.println(dt);
         double difference = xf - x0;
-        if (difference < minThreshold || difference > maxThreshold)
+        if (Math.abs(difference) < minThreshold || Math.abs(difference) > maxThreshold)
             return xf;
         else {
             System.out.println("INTERPOLATING");
-            return x0 + difference * dt * (1000/60) ;
+            return x0 + difference * INTERP_CONSTANT;
         }
 
     }
