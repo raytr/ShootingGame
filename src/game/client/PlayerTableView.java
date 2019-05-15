@@ -1,6 +1,5 @@
 package game.client;
 
-import game.client.model.Player;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableColumn;
@@ -15,11 +14,13 @@ public class PlayerTableView {
 
         TableColumn<String, Player> column1 = new TableColumn<>("Player ID:");
         column1.setCellValueFactory(new PropertyValueFactory<>("playerId"));
+        //tv.setStyle("-fx-opacity:1.0");
+        //tv.setDisable(true);
 
-
+        tv.setFocusTraversable(false);
         TableColumn<String, Player> column2 = new TableColumn<>("Name");
         column2.setCellValueFactory(new PropertyValueFactory<>("name"));
-
+        tv.setSelectionModel(null);
         tv.getColumns().add(column1);
         tv.getColumns().add(column2);
         tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

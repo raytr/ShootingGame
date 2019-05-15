@@ -35,6 +35,7 @@ public class Packet {
     }
 
     public void addMessage(Message m) {
+
         try {
             if (m.isReliable() && !isReliable) {
                 throw new Exception("Tried putting a reliable message into an unreliable packet");

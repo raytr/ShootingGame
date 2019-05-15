@@ -1,6 +1,10 @@
 package game.server.model;
 
+import game.shared.EntityType;
+
 public abstract class Entity {
+    protected String name;
+    protected EntityType entityType;
     protected int id;
     protected double x;
     protected double y;
@@ -8,10 +12,15 @@ public abstract class Entity {
     protected double vy;
     protected double width = 100;
     protected double height = 100;
+
+    public EntityType getEntityType(){return entityType;};
     public void update(){
         x += vx;
         y += vy;
+        vx*=0.9;
+        vy*=0.9;
     }
+    public String getName(){return name;}
     public int getId(){
         return id;
     }

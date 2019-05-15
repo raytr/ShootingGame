@@ -24,7 +24,7 @@ public class ChatBox {
     private Pane body;
     private NetManager nm;
     private Game g;
-    public ChatBox(Game g,NetManager nm){
+    public ChatBox(int width, int height,Game g,NetManager nm){
         this.g = g;
         this.nm = nm;
         body = new VBox();
@@ -41,8 +41,11 @@ public class ChatBox {
             }
         });
         ScrollPane scrollPane = new ScrollPane(chatPane);
-        chatPane.setPrefHeight(400);
-        chatPane.setPrefWidth(200);
+        chatPane.setPrefHeight(height);
+        chatPane.setPrefWidth(width);
+
+        scrollPane.setStyle("-fx-focus-color: transparent; -fx-faint-focus-color: transparent");
+
 
         // removing this line will allow the scroll pane to grow
         // to an unlimited width, and so will prevent the text from

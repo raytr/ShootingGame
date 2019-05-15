@@ -99,11 +99,11 @@ public class NetManager {
     //Send messages in packet
     //If there are too many, then divides into multiple messages automatically
     public Set<Integer> sendMessages(List<Message> msgList) {
-        System.out.println("Attempting to write " + msgList.size() + " messages.");
+        //System.out.println("Attempting to write " + msgList.size() + " messages.");
         Set<Integer> seqNums = new HashSet<Integer>();
         List<Packet> packetList = PacketWriter.write(seqNums, this, 1024, msgList);
         for (Packet p : packetList) {
-            System.out.println("Packet size " + p.getSize());
+            //System.out.println("Packet size " + p.getSize());
             udpSender.queuePacket(p);
         }
         return seqNums;

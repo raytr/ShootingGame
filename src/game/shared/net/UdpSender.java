@@ -95,9 +95,13 @@ class UdpSender extends Thread {
     }
 
     public void removeWaitingAck(InetSocketAddress addr, int seqNum) {
-        InetAddrSeqNumKey key = new InetAddrSeqNumKey(addr, seqNum);
-        awaitingAckIDs.get(key).onSuccess(addr);
-        awaitingAckIDs.remove(key);
+        try {
+            InetAddrSeqNumKey key = new InetAddrSeqNumKey(addr, seqNum);
+            awaitingAckIDs.get(key).onSuccess(addr);
+            awaitingAckIDs.remove(key);
+        }catch (NullPointerException np){
+            np.printStackTrace();
+        }
     }
 
     private void scheduleRechecks(InetAddrSeqNumKey key, Packet p) {

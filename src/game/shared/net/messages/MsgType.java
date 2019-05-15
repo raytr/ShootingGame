@@ -30,17 +30,28 @@ public enum MsgType {
             return ChatMsg.decode(bytes);
         }
     },
-    GAME_STATE(3){
+    ENTITY_STATE(3){
         @Override
         public Message decode(byte[] bytes){
-            //TODO
-            return LogoutMsg.decode(bytes);
+            return EntityStateMsg.decode(bytes);
         }
     },
-    PLAYER_INTENT(6){
+    ENTITY_CREATE(5){
         @Override
         public Message decode(byte[] bytes){
-            return PlayerIntentMsg.decode(bytes);
+            return EntityCreateMsg.decode(bytes);
+        }
+    },
+    ENTITY_DELETE(6){
+        @Override
+        public Message decode(byte[] bytes){
+            return EntityDeleteMsg.decode(bytes);
+        }
+    },
+    PLAYER_COMMAND(4){
+        @Override
+        public Message decode(byte[] bytes){
+            return CommandMsg.decode(bytes);
         }
     };
 

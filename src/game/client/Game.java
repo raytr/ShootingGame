@@ -1,30 +1,36 @@
 package game.client;
 
-import game.client.model.Player;
 import game.client.net.ClientReceivePacketHandler;
 import game.shared.net.NetManager;
+import game.shared.net.Packet;
 import game.shared.net.PacketSuccessFailHandler;
+import game.shared.net.messages.CommandMsg;
 import game.shared.net.messages.LoginMsg;
 import game.shared.net.messages.LogoutMsg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Game {
+    private Playfield playfield = new Playfield(this);
+    private BorderPane mainPane;
     private ChatBox chatBox;
     private final NetManager nh;
     private String username;
     private int playerNum = -1;
     private ObservableList<Player> playerList = FXCollections.observableArrayList();
+    Player clientPlayer;
 
     public Game(InetSocketAddress serverAddr) {
         ClientReceivePacketHandler crph = new ClientReceivePacketHandler(this);
@@ -37,45 +43,51 @@ public class Game {
     }
 
     public void show(Stage stage) {
-        stage.setTitle("HBox Experiment 1");
+        stage.setTitle("SHOOTER GAME CLIENT");
+        mainPane = new BorderPane();
 
+        //Set up scene
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        int screenWidth = (int)primaryScreenBounds.getWidth();
+        int screenHeight = (int)primaryScreenBounds.getHeight();
+        screenWidth /= 1.5;
+        screenHeight /= 1.2;
+        Scene scene = new Scene(mainPane, screenWidth, screenHeight);
+
+
+
+
+        //Set up right-hand side bar playerview and chat box
         PlayerTableView ptv = new PlayerTableView(playerList);
-
-        chatBox = new ChatBox(this,nh);
-
-        Label label = new Label("Not clicked");
-        Button button = new Button("Click");
-
-        button.setOnAction(value -> {
-            label.setText("Clicked!");
-        });
-        HBox hbox = new HBox();
+        ptv.getTable().setPrefHeight(screenHeight/2);
+        chatBox = new ChatBox(screenWidth/5,screenHeight/2,this,nh);
         VBox vbox = new VBox();
-        hbox.getChildren().add(button);
         vbox.getChildren().add(ptv.getTable());
         vbox.getChildren().add(chatBox.getBody());
-        hbox.getChildren().add(vbox);
+        mainPane.setRight(vbox);
 
 
-        Scene scene = new Scene(hbox, 800, 800);
-        stage.setScene(scene);
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                nh.sendMessage(LogoutMsg.encode(playerNum), new PacketSuccessFailHandler() {
-                    @Override
-                    public void run(InetSocketAddress addr) {
+        //Set up left-hand playfield
+        playfield.init(screenWidth - screenWidth/5,screenHeight);
+        mainPane.setLeft(playfield.getBody());
 
-                        nh.stop();
-                    }
-                }, new PacketSuccessFailHandler() {
-                    @Override
-                    public void run(InetSocketAddress addr) {
-                        nh.stop();
-                    }
-                });
+
+        ControlBinder cb = new ControlBinder(this,mainPane);
+
+        mainPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                mainPane.requestFocus();
             }
         });
+        stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                close();
+            }
+        });
     }
 
     public String getPlayerName() {
@@ -89,31 +101,71 @@ public class Game {
     public void setPlayerNum(int s) {
         playerNum = s;
     }
+    public void setClientPlayer(Player p){
+        clientPlayer = p;
+    }
 
-    public void addPlayer(int playerNum, String name) {
+    public Player addPlayer(int playerNum, String name) {
         //System.out.println("ADDING " + playerNum + " " +name);
         for (Player p : playerList){
-            if (p.getPlayerId() == playerNum) return;
+            if (p.getPlayerId() == playerNum) return null;
         }
-        playerList.add(new Player(playerNum,name));
+        Player newPlayer = new Player(playerNum,name);
+
+        playerList.add(newPlayer);
+        return newPlayer;
+        /*
+        Sprite newSprite = new Sprite();
+        newSprite.setName(newPlayer.getName());
+        newSprite.setId(newPlayer.getPlayerId());
+        newPlayer.setSprite(newSprite);
+        playfield.addSprite(newSprite);
+        if (playerNum == this.getPlayerNum()){
+            playfield.bindCameraToSprite(newSprite);
+        }
+
+         */
+
+    }
+    public Player getClientPlayer(){
+        return clientPlayer;
     }
     public void removePlayer(int playerNum){
         for (int i=playerList.size() - 1;i>=0;i--){
             if (playerList.get(i).getPlayerId() == playerNum){
+                Player p = playerList.get(i);
                 playerList.remove(i);
                 return;
             }
         }
     }
+    public List<Player> getPlayerList(){return playerList;}
 
-    public ChatBox getChatBox(){
-        return chatBox;
-    }
 
     public Player getPlayer(int playerNum) {
         for (Player p : playerList){
             if (p.getPlayerId() == playerNum) return p;
         }
         return null;
+    }
+
+    public void handlePlayerCommand(ClientCommand m) {
+        m.execute(playfield.getCameraBoundedSprite());
+        nh.sendMessage(CommandMsg.encode(playerNum,m.getCommand()));
+    }
+
+    public ChatBox getChatBox(){
+        return chatBox;
+    }
+    public Playfield getPlayfield(){return playfield;}
+    private void close(){
+        PacketSuccessFailHandler psfh = new PacketSuccessFailHandler() {
+            @Override
+            public void run(InetSocketAddress addr) {
+                playfield.stop();
+                nh.stop();
+            }
+        };
+        nh.sendMessage(LogoutMsg.encode(playerNum), psfh, psfh);
     }
 }

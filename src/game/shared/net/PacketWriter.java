@@ -17,10 +17,14 @@ class PacketWriter {
             else unreliableList.add(m);
         }
 
+
+
+        //System.out.println("Sending " + reliableList.size() + " reliable messages");
+        //System.out.println("Sending  " + unreliableList.size() + " unreliable messages");
         makePackets(seqNums, true, nh, maxBytesPerPacket, reliableList, returnList);
         makePackets(seqNums, false, nh, maxBytesPerPacket, unreliableList, returnList);
 
-        System.out.println("Made " + returnList.size() + " messages");
+        //System.out.println("Made " + returnList.size() + " packets");
 
         return returnList;
     }
