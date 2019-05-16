@@ -1,7 +1,9 @@
 package game.client;
 
+import game.client.commands.ClientMouseMoveCommand;
 import game.client.commands.ClientMoveCommand;
 import game.shared.net.messages.Command;
+import game.shared.net.messages.commands.MouseMoveCommand;
 import game.shared.net.messages.commands.MoveCommand;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -39,6 +41,18 @@ public class ControlBinder {
                 new ClientMoveCommand(MoveCommand.encode(null,null,true,null)),
                 new ClientMoveCommand(MoveCommand.encode(null,null,false,null))
         });
+        controlPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                sendAngle(event);
+            }
+        });
+        controlPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                sendAngle(event);
+            }
+        });
 
 
         //Bind commands
@@ -66,5 +80,31 @@ public class ControlBinder {
             }
         });
 
+    }
+
+    private void sendAngle(MouseEvent event){
+        double x0 = 0;
+        double y0 = 0;
+        boolean useZero = false;
+        try{
+            Sprite sprite = g.getClientPlayer().getSprite();
+            x0 = g.getPlayfield().getWidth()/2;
+            y0 = g.getPlayfield().getHeight()/2;
+        }catch(NullPointerException npe){
+            //Do nothing; the sprite hasn't been bound yet
+            System.out.println("Expecting this");
+            useZero = true;
+        }
+        double angle = 0;
+        if (!useZero) angle = getAngle(x0,y0, event.getX(),event.getY());
+        g.handlePlayerCommand(new ClientMouseMoveCommand(MouseMoveCommand.encode((float)angle)));
+    }
+    private double getAngle(double x1, double y1, double x2, double y2) {
+        System.out.println("ANGLE BETWEEN :" +x1 + " " + y1 + " " + x2 + " " + y2);
+        float angle = (float) (Math.atan2(y2 - y1, x2 - x1));
+        if (angle < 0) {
+            angle += 2 * Math.PI;
+        }
+        return angle;
     }
 }

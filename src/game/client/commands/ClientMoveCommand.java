@@ -1,11 +1,12 @@
 package game.client.commands;
 
 import game.client.ClientCommand;
+import game.client.ClientServerCommunicationCommand;
 import game.client.Sprite;
 import game.shared.net.messages.Command;
 import game.shared.net.messages.commands.MoveCommand;
 
-public class ClientMoveCommand implements ClientCommand {
+public class ClientMoveCommand implements ClientCommand, ClientServerCommunicationCommand {
     MoveCommand moveCommand;
     public ClientMoveCommand(MoveCommand mc){
         moveCommand =mc;

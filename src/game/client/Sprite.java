@@ -1,8 +1,12 @@
 package game.client;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 
 public class Sprite {
     private final double INTERP_CONSTANT = 0.90;
@@ -20,6 +24,9 @@ public class Sprite {
     private double vy = 0;
     private double width = 100;
     private double height = 100;
+    private double angle = 0;
+    private double remoteAngle = 0;
+
     public String getName(){
         return name;
     }
@@ -80,15 +87,41 @@ public class Sprite {
     }
 
     void draw(GraphicsContext gc) {
+        //Set rotation
+        gc.save();
+        //Draw body
+        //Affine affine = new Affine();
+        //affine.appendTranslation(x + width/2,y + height/2);
+        //affine.appendRotation(Math.toDegrees(angle));
+        //gc.transform(affine);
+
+
+        gc.translate(x + width/2,y+height/2);
+        gc.rotate(Math.toDegrees(angle));
+
         gc.setFill(Color.rgb(255, 0, 0, 0.2));
-        gc.fillRect(x, y, width, height);
-
-        gc.setFill(Color.rgb(0, 0, 255, 0.2));
-        gc.fillRect(remoteX, remoteY, width, height);
-
+        gc.fillRect(-width/2, -height/2, width, height);
+        //Draw name
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.rotate(-Math.toDegrees(angle));
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font ("Arial", 24));
-        gc.fillText(name,x,y-10);
+        gc.fillText(name,0,0);
+
+        gc.translate(-(x + width/2),-(y+height/2));
+
+
+
+        //Draw network shadow
+        gc.translate(remoteX + width/2,remoteY + height/2);
+        gc.rotate(Math.toDegrees(remoteAngle));
+        gc.setFill(Color.rgb(0, 0, 255, 0.2));
+        gc.fillRect(-width/2, -height/2, width, height);
+
+
+        //Restrore gc
+        gc.restore();
     }
     public void setName(String s){
         this.name =s;
@@ -96,6 +129,12 @@ public class Sprite {
     }
 
     public void update(double dt) {
+        System.out.println("ANGLE: "+angle);
+        x = interpolate(x,remoteX,0.001,500);
+        //System.out.println("XF: "+x);
+        y = interpolate(y,remoteY,0.001,500);
+        angle = interpolate(angle,remoteAngle,0.001,Math.PI);
+
         int[] netMove = new int[]{0,0};
 
         if (goUp) netMove[1] -= 1;
@@ -111,18 +150,13 @@ public class Sprite {
 
         vx*=0.9;
         vy*=0.9;
-        //System.out.println("X0: "+x);
-        x = interpolate(dt,x,remoteX,0.001,500);
-        //System.out.println("XF: "+x);
-        y = interpolate(dt,y,remoteY,0.001,500);
     }
-    private double interpolate(double dt,double x0,double xf,double minThreshold,double maxThreshold){
+    private double interpolate(double x0,double xf,double minThreshold,double maxThreshold){
         //System.out.println(dt);
         double difference = xf - x0;
         if (Math.abs(difference) < minThreshold || Math.abs(difference) > maxThreshold)
             return xf;
         else {
-            System.out.println("INTERPOLATING");
             return x0 + difference * INTERP_CONSTANT;
         }
 
@@ -139,5 +173,13 @@ public class Sprite {
     }
     public void setGoDown(boolean goDown) {
         this.goDown = goDown;
+    }
+
+    public void setRotation(float angle) {
+        this.angle = angle;
+    }
+
+    public void setRemoteAngle(float angle) {
+        this.remoteAngle = angle;
     }
 }

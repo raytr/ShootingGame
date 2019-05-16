@@ -151,7 +151,8 @@ public class Game {
 
     public void handlePlayerCommand(ClientCommand m) {
         m.execute(playfield.getCameraBoundedSprite());
-        nh.sendMessage(CommandMsg.encode(playerNum,m.getCommand()));
+        if(m instanceof ClientServerCommunicationCommand)
+            nh.sendMessage(CommandMsg.encode(playerNum,((ClientServerCommunicationCommand) m).getCommand()));
     }
 
     public ChatBox getChatBox(){

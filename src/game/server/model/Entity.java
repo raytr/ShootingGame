@@ -12,6 +12,7 @@ public abstract class Entity {
     protected double vy;
     protected double width = 100;
     protected double height = 100;
+    private double angle = 0;
 
     public EntityType getEntityType(){return entityType;};
     public void update(){
@@ -74,5 +75,13 @@ public abstract class Entity {
 
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    public void setAngle(double angle){
+        this.angle = angle;
+
+    };
+    public double getAngle(){
+        return angle;
     }
 }

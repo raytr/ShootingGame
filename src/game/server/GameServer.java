@@ -40,7 +40,7 @@ public class GameServer {
                 List<Message> entityStateMsgs = new ArrayList<Message>();
                 for (Entity e : entityList){
                     e.update();
-                    entityStateMsgs.add(EntityStateMsg.encode(e.getId(),e.getX(),e.getY()));
+                    entityStateMsgs.add(EntityStateMsg.encode(e.getId(),e.getX(),e.getY(),e.getAngle()));
                 }
                 nh.sendMessages(entityStateMsgs);
             }

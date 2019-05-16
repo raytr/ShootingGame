@@ -15,8 +15,7 @@ public enum CommandType {
     MOUSE_MOVE(0){
         @Override
         public Command decode(byte[] bytes){
-            //@TODO
-            return MoveCommand.decode(bytes);
+            return MouseMoveCommand.decode(bytes);
         }
     },
     START_SHOOT(1){

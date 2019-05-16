@@ -87,4 +87,11 @@ public class Playfield {
     public Sprite getCameraBoundedSprite() {
         return gameCamera.getBoundedSprite();
     }
+
+    public double getHeight() {
+        return height;
+    }
+    public double getWidth(){
+        return width;
+    }
 }

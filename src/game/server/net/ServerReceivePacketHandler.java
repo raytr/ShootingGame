@@ -8,6 +8,7 @@ import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
 import game.shared.net.Packet;
+import game.shared.net.messages.commands.MouseMoveCommand;
 import game.shared.net.messages.commands.MoveCommand;
 
 public class ServerReceivePacketHandler implements ReceivePacketHandler {
@@ -68,14 +69,18 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
                 case PLAYER_COMMAND:
                     Command c = ((CommandMsg)m).getCommand();
                     //System.out.println(c.getType());
+                    Player p = gs.getPlayerById(((CommandMsg) m).getPlayerNum());
                     switch (c.getType()){
                         case MOVE:
                             MoveCommand mc = (MoveCommand)c;
-                            Player p = gs.getPlayerById(((CommandMsg) m).getPlayerNum());
                             if(mc.getMoveDown() != null) p.setMoveDown(mc.getMoveDown());
                             if(mc.getMoveUp() != null) p.setMoveUp(mc.getMoveUp());
                             if(mc.getMoveLeft() != null) p.setMoveLeft(mc.getMoveLeft());
                             if(mc.getMoveRight() !=null ) p.setMoveRight(mc.getMoveRight());
+                            break;
+                        case MOUSE_MOVE:
+                            MouseMoveCommand mmc = (MouseMoveCommand)c;
+                            p.setAngle(mmc.getAngle());
                             break;
                     }
                     break;

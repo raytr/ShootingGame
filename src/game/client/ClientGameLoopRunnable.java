@@ -27,6 +27,7 @@ public class ClientGameLoopRunnable implements Runnable {
                 if (!cameraInit){
                     for (Sprite s : p.getSpriteList()){
                         if (s.getId() == g.getPlayerNum()){
+                            g.getClientPlayer().setSprite(s);
                             p.bindCameraToSprite(s);
                             cameraInit = true;
                             break;

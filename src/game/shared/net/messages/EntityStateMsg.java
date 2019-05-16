@@ -9,8 +9,10 @@ public class EntityStateMsg implements Message {
     private final int id;
     final float x;
     final float y;
+    final float angle;
 
-    private EntityStateMsg(byte[] bytes,int id, float x0, float y0) {
+    private EntityStateMsg(byte[] bytes,int id, float x0, float y0,float angle) {
+        this.angle = angle;
         this.bytes = bytes;
         this.id = id;
         this.x = x0;
@@ -24,20 +26,22 @@ public class EntityStateMsg implements Message {
         int id = b.getInt();
         float x0 = b.getFloat();
         float y0 = b.getFloat();
-        return new EntityStateMsg(bytes, id,x0,y0);
+        float angle = b.getFloat();
+        return new EntityStateMsg(bytes, id,x0,y0,angle);
     }
 
-    public static EntityStateMsg encode(int id,double x,double y) {
-        ByteBuffer b = ByteBuffer.allocate(Message.HEADER_BYTE_SIZE + 4 +4 + 4);
+    public static EntityStateMsg encode(int id,double x,double y,double angle) {
+        ByteBuffer b = ByteBuffer.allocate(Message.HEADER_BYTE_SIZE + 4 +4 + 4 + 4);
         //Add message type
         b.putInt(MsgType.ENTITY_STATE.getValue());
         //Add message size
-        b.putInt(4 + 4 + 4);
+        b.putInt(4 + 4 + 4 + 4);
         //Put in content
         b.putInt(id);
         b.putFloat((float)x);
         b.putFloat((float)y);
-        return new EntityStateMsg(b.array(), id, (float)x,(float)y);
+        b.putFloat((float)angle);
+        return new EntityStateMsg(b.array(), id, (float)x,(float)y,(float)angle);
     }
 
     public int getId() {
@@ -50,6 +54,9 @@ public class EntityStateMsg implements Message {
 
     public float getY() {
         return y;
+    }
+    public float getAngle(){
+        return angle;
     }
 
     @Override

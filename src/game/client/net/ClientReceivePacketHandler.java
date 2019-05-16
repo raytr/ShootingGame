@@ -69,6 +69,7 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                         //sprite.setY(esm.getY());
                         sprite.setRemoteX(esm.getX());
                         sprite.setRemoteY(esm.getY());
+                        sprite.setRemoteAngle(esm.getAngle());
                     }
                     break;
                 default:
