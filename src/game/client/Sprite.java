@@ -9,8 +9,9 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 public class Sprite {
-    private final double INTERP_CONSTANT = 0.90;
+    private final double INTERP_CONSTANT = 0.95;
     private String name = "test";
+    private Color color = Color.rgb(255,0,0,0.2);
     private int id;
     private boolean goUp = false;
     private boolean goDown = false;
@@ -22,14 +23,17 @@ public class Sprite {
     private double y = 0;
     private double vx = 0;
     private double vy = 0;
-    private double width = 100;
-    private double height = 100;
+    private double width = 70;
+    private double height = 70;
     private double angle = 0;
     private double remoteAngle = 0;
+    private int hp= 0;
 
     public String getName(){
         return name;
     }
+    public int getHp(){return hp;}
+    public void setHp(int h){hp=h;}
     public int getId(){return id;}
     public void setId(int i){id =i;}
     public void setRemoteX(double x2){
@@ -95,11 +99,10 @@ public class Sprite {
         //affine.appendRotation(Math.toDegrees(angle));
         //gc.transform(affine);
 
-
-        gc.translate(x ,y);
+        gc.translate(x +width/2,y + width/2);
         gc.rotate(Math.toDegrees(angle));
 
-        gc.setFill(Color.rgb(255, 0, 0, 0.2));
+        gc.setFill(color);
         gc.fillRect(-width/2, -height/2, width, height);
         //Draw name
         gc.setTextAlign(TextAlignment.CENTER);
@@ -108,13 +111,13 @@ public class Sprite {
         gc.setFill(Color.BLACK);
         gc.setFont(Font.font ("Arial", 24));
         gc.fillText(name,0,0);
-
-        gc.translate(-x ,-y);
-
-
+        //Draw health bar
+        gc.setFill(Color.GREEN);
+        gc.fillRect(-width/2,-height/2 - 30,width * hp/100,height/2 - 20);
 
         //Draw network shadow
-        gc.translate(remoteX ,remoteY );
+        gc.translate(-x -width/2 ,-y - width/2);
+        gc.translate(remoteX +width/2,remoteY +width/2);
         gc.rotate(Math.toDegrees(remoteAngle));
         gc.setFill(Color.rgb(0, 0, 255, 0.2));
         gc.fillRect(-width/2, -height/2, width, height);
@@ -180,5 +183,8 @@ public class Sprite {
 
     public void setRemoteAngle(float angle) {
         this.remoteAngle = angle;
+    }
+    public void setRGBColor(int r,int g, int b,int opacity){
+        this.color = new Color(r,g,b,opacity);
     }
 }

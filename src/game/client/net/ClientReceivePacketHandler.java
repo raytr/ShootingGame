@@ -65,10 +65,18 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                     if (sprite != null) {
                         //sprite.setX(esm.getX());
                         //sprite.setY(esm.getY());
+                        sprite.setHp(esm.getHp());
                         sprite.setRemoteX(esm.getX());
                         sprite.setRemoteY(esm.getY());
                         sprite.setRemoteAngle(esm.getAngle());
                     }
+                    break;
+                case GAME_MAP:
+                    GameMapMsg gmm = (GameMapMsg)m;
+                    g.getPlayfield().setCanvasWidth(gmm.getWidth());
+                    g.getPlayfield().setCanvasHeight(gmm.getHeight());
+
+
                     break;
                 default:
                     break;

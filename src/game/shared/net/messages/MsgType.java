@@ -1,5 +1,6 @@
 package game.shared.net.messages;
 
+import game.server.model.GameMap;
 import game.shared.net.Message;
 
 import java.util.HashMap;
@@ -36,22 +37,28 @@ public enum MsgType {
             return EntityStateMsg.decode(bytes);
         }
     },
-    ENTITY_CREATE(5){
+    ENTITY_CREATE(4){
         @Override
         public Message decode(byte[] bytes){
             return EntityCreateMsg.decode(bytes);
         }
     },
-    ENTITY_DELETE(6){
+    ENTITY_DELETE(5){
         @Override
         public Message decode(byte[] bytes){
             return EntityDeleteMsg.decode(bytes);
         }
     },
-    PLAYER_COMMAND(4){
+    PLAYER_COMMAND(6){
         @Override
         public Message decode(byte[] bytes){
             return CommandMsg.decode(bytes);
+        }
+    },
+    GAME_MAP(7){
+        @Override
+        public Message decode(byte[] bytes){
+            return GameMapMsg.decode(bytes);
         }
     };
 

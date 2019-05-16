@@ -25,6 +25,8 @@ public class Playfield {
     private GameCamera gameCamera = new GameCamera();
     private double width;
     private double height;
+    private double canvasWidth = 2000;
+    private double canvasHeight = 2000;
     private GameLoop gameLoop;
     private Game g;
     public Playfield(Game g){
@@ -33,7 +35,7 @@ public class Playfield {
     public void init(double width, double height){
         this.width = width;
         this.height = height;
-        gameArea = new Canvas(width,height);
+        gameArea = new Canvas(canvasWidth,canvasHeight);
         gameArea.setFocusTraversable(true);
         gc = gameArea.getGraphicsContext2D();
 
@@ -58,11 +60,23 @@ public class Playfield {
         gc.clearRect(0, 0, gameArea.getWidth(), gameArea.getHeight());
     }
     public void draw(){
+        if (canvasWidth != gameArea.getWidth()) gameArea.setWidth(canvasWidth);
+        if (canvasHeight != gameArea.getHeight()) gameArea.setHeight(canvasHeight);
         clear();
+        createBorder();
         for (Sprite s : spriteMap.values()){
             s.draw(gc);
         }
     }
+
+    private void createBorder() {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0,0,1,gameArea.getHeight());
+        gc.fillRect(0,0,gameArea.getWidth(),1);
+        gc.fillRect(gameArea.getWidth()-1,0,1,gameArea.getHeight());
+        gc.fillRect(0,gameArea.getHeight()-1,gameArea.getWidth(),1);
+    }
+
     public void addSprite(Sprite s){
         spriteMap.put(s.getId(),s);
     }
@@ -94,5 +108,13 @@ public class Playfield {
     }
     public double getWidth(){
         return width;
+    }
+
+    public void setCanvasHeight(float height) {
+        canvasHeight =height;
+    }
+
+    public void setCanvasWidth(float width) {
+        canvasWidth = width;
     }
 }

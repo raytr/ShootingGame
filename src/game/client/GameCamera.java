@@ -26,8 +26,8 @@ public class GameCamera {
     public Sprite getBoundedSprite(){return centerSprite;}
 
     public void update() {
-        pc.setTranslateX(centerSprite.getX() + centerSprite.getWidth() / 2 - screenWidth / 2);
-        pc.setTranslateY(centerSprite.getY() + centerSprite.getHeight() / 2 - screenHeight / 2);
+        pc.setTranslateX(centerSprite.getX() + centerSprite.getWidth()/2 - screenWidth / 2);
+        pc.setTranslateY(centerSprite.getY() + centerSprite.getHeight()/2- screenHeight / 2);
     }
 
     public double getX() {

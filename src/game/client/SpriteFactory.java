@@ -1,6 +1,7 @@
 package game.client;
 
 import game.shared.net.messages.EntityCreateMsg;
+import javafx.scene.paint.Color;
 
 public class SpriteFactory {
     public static Sprite createSprite(EntityCreateMsg ecm){
@@ -14,10 +15,19 @@ public class SpriteFactory {
 
         switch (ecm.getEntityType()){
             case PLAYER:
+                newSprite.setWidth(70);
+                newSprite.setHeight(70);
                 break;
             case BULLET:
                 newSprite.setWidth(10);
                 newSprite.setHeight(10);
+                break;
+            case WALL:
+                newSprite.setRGBColor(0,0,0,1);
+                newSprite.setWidth(50);
+                newSprite.setHeight(50);
+                break;
+            default:
                 break;
         }
         return newSprite;

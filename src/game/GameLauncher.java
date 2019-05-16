@@ -18,9 +18,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 
 public class GameLauncher extends Application {
@@ -87,6 +89,11 @@ public class GameLauncher extends Application {
         Button btn2 = new Button("Make a server");
         grid.add(btn2, 6, 3);
 
+
+        Button btn3 = new Button("Load map file");
+        btn3.setDisable(true);
+        grid.add(btn3, 6, 4);
+
         Label errMsg2 = new Label("");
         errMsg2.setFont(Font.font("Arial", 12));
         grid.add(errMsg2, 6, 4);
@@ -151,11 +158,24 @@ public class GameLauncher extends Application {
                         gameServer.init();
                         btn2.setText("Stop server");
                         portField2.setDisable(true);
+                        btn3.setDisable(false);
                     } else {
                         gameServer.stop();
                         btn2.setText("Make a server");
                         portField2.setDisable(false);
+                        btn3.setDisable(true);
                     }
+                }
+            }
+        });
+        btn3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open map file (.csv)");
+                File file = fileChooser.showOpenDialog(primaryStage);
+                if (file !=null){
+                    gameServer.loadGameMapFile(file);
                 }
             }
         });

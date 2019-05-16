@@ -51,6 +51,8 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
                                 packet.getSocketAddress());
 
                     }
+                    //Notify the new player about the map size
+                    gs.getNetManager().sendMessage(GameMapMsg.encode(gs.getMapWidth(),gs.getMapHeight()));
                     break;
                 case LOGOUT:
                     playerNum = ((LogoutMsg) m).getPlayerNum();

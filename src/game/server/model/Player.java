@@ -13,12 +13,14 @@ public class Player extends Entity {
 
     public Player(int playerNum, String name) {
         super();
+        hp = 100;
         this.name = name;
         this.id = playerNum;
         entityType = EntityType.PLAYER;
+        collisionModel = new CircleCollisionModel(this);
     }
     @Override
-    public void update(){
+    public void updateVelocity(){
         //System.out.println("ID: "+id + " X: " +x);
         int[] netMove = new int[]{0,0};
 
@@ -29,7 +31,7 @@ public class Player extends Entity {
 
         vx += netMove[0];
         vy += netMove[1];
-        super.update();
+        super.updateVelocity();
     }
 
     public boolean isMoveUp() {

@@ -6,25 +6,30 @@ public abstract class Entity {
     protected String name = "";
     protected EntityType entityType;
     private static int entityCounter = 0;
+    //Whether or not to send updates
+    protected boolean sendUpdates = true;
+    protected CollisionModel collisionModel = new RectangleCollisionModel(this);
 
+    protected int hp = 0;
     protected int id = 99 ;
     protected int updateTicks = 0;
     protected double x = 0;
     protected double y = 0;
     protected double vx = 0;
     protected double vy = 0;
-    protected double width = 100;
-    protected double height = 100;
+    protected double width = 70;
+    protected double height = 70;
     private double angle = 0;
     Entity(){
         entityCounter++;
         id += entityCounter;
     }
 
-    public void update(){
+    public boolean getSendUpdates(){
+        return sendUpdates;
+    }
+    public void updateVelocity(){
         updateTicks++;
-        x += vx;
-        y += vy;
         vx*=0.9;
         vy*=0.9;
     }
@@ -93,4 +98,16 @@ public abstract class Entity {
     }
     public abstract EntityType getEntityType();
 
+    public int getHp(){
+        return hp;
+    };
+    public void setHp(int h){
+        hp = h;
+        if (hp < 0) hp =0;
+    }
+    public boolean collides(Entity other){
+        return collisionModel.collidesWith(other.getCollisionModel());
+    }
+
+    protected CollisionModel getCollisionModel(){return collisionModel;}
 }
