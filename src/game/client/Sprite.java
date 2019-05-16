@@ -115,12 +115,15 @@ public class Sprite {
         gc.setFill(Color.GREEN);
         gc.fillRect(-width/2,-height/2 - 30,width * hp/100,height/2 - 20);
 
+        /*
         //Draw network shadow
         gc.translate(-x -width/2 ,-y - width/2);
         gc.translate(remoteX +width/2,remoteY +width/2);
         gc.rotate(Math.toDegrees(remoteAngle));
         gc.setFill(Color.rgb(0, 0, 255, 0.2));
         gc.fillRect(-width/2, -height/2, width, height);
+        
+         */
 
 
         //Restrore gc
