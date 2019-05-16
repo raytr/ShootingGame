@@ -12,24 +12,16 @@ public enum CommandType {
             return MoveCommand.decode(bytes);
         }
     },
-    MOUSE_MOVE(0){
+    CHANGE_ANGLE(0){
         @Override
         public Command decode(byte[] bytes){
-            return MouseMoveCommand.decode(bytes);
+            return ChangeAngleCommand.decode(bytes);
         }
     },
-    START_SHOOT(1){
+    SET_SHOOTING(1){
         @Override
         public Command decode(byte[] bytes){
-            //TODO
-            return MoveCommand.decode(bytes);
-        }
-    },
-    STOP_SHOOT(2){
-        @Override
-        public Command decode(byte[] bytes){
-            //TODO
-            return MoveCommand.decode(bytes);
+            return SetShootingCommand.decode(bytes);
         }
     };
 

@@ -3,6 +3,7 @@ package game.client.net;
 import game.client.Game;
 import game.client.Player;
 import game.client.Sprite;
+import game.client.SpriteFactory;
 import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
@@ -49,10 +50,7 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                     break;
                 case ENTITY_CREATE:
                     EntityCreateMsg ecm = (EntityCreateMsg) m;
-                    Sprite newSprite = new Sprite();
-                    newSprite.setId(ecm.getId());
-                    newSprite.setName(ecm.getName());
-                    g.getPlayfield().addSprite(newSprite);
+                    g.getPlayfield().addSprite(SpriteFactory.createSprite(ecm));
 
                     break;
 

@@ -4,25 +4,25 @@ import game.shared.net.messages.Command;
 
 import java.nio.ByteBuffer;
 
-public class MouseMoveCommand implements Command {
+public class ChangeAngleCommand implements Command {
     private byte[] bytes;
     private float angle;
 
-    private MouseMoveCommand(byte[] bytes, float angle){
+    private ChangeAngleCommand(byte[] bytes, float angle){
         this.bytes = bytes;
         this.angle = angle;
     }
     //Expecting CONTENT only (without messageType + msgSize
-    public static MouseMoveCommand decode(byte[] bytes) {
+    public static ChangeAngleCommand decode(byte[] bytes) {
         ByteBuffer b = ByteBuffer.wrap(bytes);
         float angle = b.getFloat();
-        return new MouseMoveCommand(bytes, angle);
+        return new ChangeAngleCommand(bytes, angle);
     }
 
-    public static MouseMoveCommand encode(float angle) {
+    public static ChangeAngleCommand encode(float angle) {
         ByteBuffer b = ByteBuffer.allocate(8);
         b.putFloat(angle);
-        return new MouseMoveCommand(b.array(), angle);
+        return new ChangeAngleCommand(b.array(), angle);
     }
     @Override
     public int getByteSize() {
@@ -36,7 +36,7 @@ public class MouseMoveCommand implements Command {
 
     @Override
     public CommandType getType() {
-        return CommandType.MOUSE_MOVE;
+        return CommandType.CHANGE_ANGLE;
     }
 
     @Override

@@ -7,8 +7,12 @@ public class Player extends Entity {
     private boolean moveDown;
     private boolean moveLeft;
     private boolean moveRight;
+    private boolean isShooting;
+    private int shootCooldownUpdateTicks = 10;
+
 
     public Player(int playerNum, String name) {
+        super();
         this.name = name;
         this.id = playerNum;
         entityType = EntityType.PLAYER;
@@ -64,4 +68,17 @@ public class Player extends Entity {
         return name;
     }
 
+    public void setIsShooting(boolean b) {
+        this.isShooting = b;
+    }
+    public boolean getIsShooting(){
+        return isShooting;
+    }
+    public boolean canShoot(){
+        return isShooting && updateTicks % shootCooldownUpdateTicks == 0;
+    }
+    @Override
+    public EntityType getEntityType(){
+        return EntityType.PLAYER;
+    }
 }

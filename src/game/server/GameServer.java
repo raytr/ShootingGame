@@ -1,5 +1,6 @@
 package game.server;
 
+import game.server.model.Bullet;
 import game.server.model.Entity;
 import game.shared.EntityType;
 import game.shared.GameLoop;
@@ -38,11 +39,26 @@ public class GameServer {
             @Override
             public void run() {
                 List<Message> entityStateMsgs = new ArrayList<Message>();
+
                 for (Entity e : entityList){
                     e.update();
                     entityStateMsgs.add(EntityStateMsg.encode(e.getId(),e.getX(),e.getY(),e.getAngle()));
                 }
                 nh.sendMessages(entityStateMsgs);
+
+                List<Entity> newBullets = new ArrayList<Entity>();
+                for (Player p : playerNumPlayerMap.values()){
+                    if (p.canShoot()){
+                        System.out.println("WE IN HERE");
+                        Bullet b = new Bullet();
+                        b.setVx(b.getVx() * Math.cos(p.getAngle()));
+                        b.setVy(b.getVy() * Math.sin(p.getAngle()));
+                        b.setX(p.getX());
+                        b.setY(p.getY());
+                        newBullets.add(b);
+                    }
+                }
+                addEntities(newBullets);
             }
         },60);
         gl.start();
@@ -55,8 +71,7 @@ public class GameServer {
     public void addPlayer(int playerNum, String name) {
         Player p = new Player(playerNum, name);
         playerNumPlayerMap.put(playerNum, p);
-        nh.sendMessage(EntityCreateMsg.encode(playerNum, EntityType.PLAYER,p.getX(),p.getY(),name));
-        entityList.add(p);
+        addEntity(p);
     }
     public Collection<Player> getPlayerList(){
         return playerNumPlayerMap.values();
@@ -88,4 +103,16 @@ public class GameServer {
         return playerNumCounter;
     }
     public List<Entity> getEntityList(){return entityList;}
+    private void addEntity(Entity e){
+        nh.sendMessage(EntityCreateMsg.encode(e.getId(), e.getEntityType(),e.getX(),e.getY(),e.getName()));
+        entityList.add(e);
+    }
+    private void addEntities(List<Entity> entities){
+        List<Message> entityMsgs = new ArrayList<Message>();
+        for (Entity e : entities){
+            entityMsgs.add(EntityCreateMsg.encode(e.getId(),e.getEntityType(),e.getX(),e.getY(),e.getName()));
+        }
+        nh.sendMessages(entityMsgs);
+        entityList.addAll(entities);
+    }
 }

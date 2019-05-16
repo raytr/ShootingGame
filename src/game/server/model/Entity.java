@@ -3,19 +3,26 @@ package game.server.model;
 import game.shared.EntityType;
 
 public abstract class Entity {
-    protected String name;
+    protected String name = "";
     protected EntityType entityType;
-    protected int id;
-    protected double x;
-    protected double y;
-    protected double vx;
-    protected double vy;
+    private static int entityCounter = 0;
+
+    protected int id = 99 ;
+    protected int updateTicks = 0;
+    protected double x = 0;
+    protected double y = 0;
+    protected double vx = 0;
+    protected double vy = 0;
     protected double width = 100;
     protected double height = 100;
     private double angle = 0;
+    Entity(){
+        entityCounter++;
+        id += entityCounter;
+    }
 
-    public EntityType getEntityType(){return entityType;};
     public void update(){
+        updateTicks++;
         x += vx;
         y += vy;
         vx*=0.9;
@@ -84,4 +91,6 @@ public abstract class Entity {
     public double getAngle(){
         return angle;
     }
+    public abstract EntityType getEntityType();
+
 }

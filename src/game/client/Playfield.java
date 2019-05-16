@@ -12,6 +12,7 @@ import javafx.scene.shape.ArcType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 //Canvas element for the game
@@ -20,7 +21,7 @@ public class Playfield {
     private Node body;
     private Canvas gameArea;
     private GraphicsContext gc;
-    private HashMap<Integer,Sprite> spriteMap = new HashMap<Integer,Sprite>();
+    private ConcurrentHashMap<Integer,Sprite> spriteMap = new ConcurrentHashMap<Integer,Sprite>();
     private GameCamera gameCamera = new GameCamera();
     private double width;
     private double height;

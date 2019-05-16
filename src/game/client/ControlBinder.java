@@ -1,16 +1,16 @@
 package game.client;
 
-import game.client.commands.ClientMouseMoveCommand;
+import game.client.commands.ClientChangeAngleCommand;
 import game.client.commands.ClientMoveCommand;
-import game.shared.net.messages.Command;
-import game.shared.net.messages.commands.MouseMoveCommand;
+import game.client.commands.ClientSetShootingCommand;
+import game.shared.net.messages.commands.ChangeAngleCommand;
 import game.shared.net.messages.commands.MoveCommand;
+import game.shared.net.messages.commands.SetShootingCommand;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 
 import java.util.*;
 
@@ -59,7 +59,14 @@ public class ControlBinder {
         controlPane.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                g.handlePlayerCommand(new ClientSetShootingCommand(SetShootingCommand.encode(true)));
+            }
+        });
 
+        controlPane.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                g.handlePlayerCommand(new ClientSetShootingCommand(SetShootingCommand.encode(false)));
             }
         });
         controlPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -97,10 +104,9 @@ public class ControlBinder {
         }
         double angle = 0;
         if (!useZero) angle = getAngle(x0,y0, event.getX(),event.getY());
-        g.handlePlayerCommand(new ClientMouseMoveCommand(MouseMoveCommand.encode((float)angle)));
+        g.handlePlayerCommand(new ClientChangeAngleCommand(ChangeAngleCommand.encode((float)angle)));
     }
     private double getAngle(double x1, double y1, double x2, double y2) {
-        System.out.println("ANGLE BETWEEN :" +x1 + " " + y1 + " " + x2 + " " + y2);
         float angle = (float) (Math.atan2(y2 - y1, x2 - x1));
         if (angle < 0) {
             angle += 2 * Math.PI;

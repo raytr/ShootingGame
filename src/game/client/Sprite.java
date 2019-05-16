@@ -96,7 +96,7 @@ public class Sprite {
         //gc.transform(affine);
 
 
-        gc.translate(x + width/2,y+height/2);
+        gc.translate(x ,y);
         gc.rotate(Math.toDegrees(angle));
 
         gc.setFill(Color.rgb(255, 0, 0, 0.2));
@@ -109,12 +109,12 @@ public class Sprite {
         gc.setFont(Font.font ("Arial", 24));
         gc.fillText(name,0,0);
 
-        gc.translate(-(x + width/2),-(y+height/2));
+        gc.translate(-x ,-y);
 
 
 
         //Draw network shadow
-        gc.translate(remoteX + width/2,remoteY + height/2);
+        gc.translate(remoteX ,remoteY );
         gc.rotate(Math.toDegrees(remoteAngle));
         gc.setFill(Color.rgb(0, 0, 255, 0.2));
         gc.fillRect(-width/2, -height/2, width, height);
@@ -129,7 +129,6 @@ public class Sprite {
     }
 
     public void update(double dt) {
-        System.out.println("ANGLE: "+angle);
         x = interpolate(x,remoteX,0.001,500);
         //System.out.println("XF: "+x);
         y = interpolate(y,remoteY,0.001,500);

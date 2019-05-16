@@ -3,13 +3,13 @@ package game.server.net;
 import game.server.GameServer;
 import game.server.model.Entity;
 import game.server.model.Player;
-import game.shared.net.NetManager;
 import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
 import game.shared.net.Packet;
-import game.shared.net.messages.commands.MouseMoveCommand;
+import game.shared.net.messages.commands.ChangeAngleCommand;
 import game.shared.net.messages.commands.MoveCommand;
+import game.shared.net.messages.commands.SetShootingCommand;
 
 public class ServerReceivePacketHandler implements ReceivePacketHandler {
     private final GameServer gs;
@@ -78,9 +78,13 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
                             if(mc.getMoveLeft() != null) p.setMoveLeft(mc.getMoveLeft());
                             if(mc.getMoveRight() !=null ) p.setMoveRight(mc.getMoveRight());
                             break;
-                        case MOUSE_MOVE:
-                            MouseMoveCommand mmc = (MouseMoveCommand)c;
+                        case CHANGE_ANGLE:
+                            ChangeAngleCommand mmc = (ChangeAngleCommand)c;
                             p.setAngle(mmc.getAngle());
+                            break;
+                        case SET_SHOOTING:
+                            SetShootingCommand ssc = (SetShootingCommand)c;
+                            p.setIsShooting(ssc.getIsShooting());
                             break;
                     }
                     break;
