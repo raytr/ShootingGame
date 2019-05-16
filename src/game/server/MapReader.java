@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapReader {
-    private static final String DELIMITER = "";
+    private static final String DELIMITER = ",";
     public static GameMap read(File mapCSVFile) {
         double pxPerIndex = new Wall().getWidth();
         List<Entity> entityList = new ArrayList<Entity>();
