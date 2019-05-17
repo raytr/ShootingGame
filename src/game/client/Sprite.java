@@ -1,5 +1,6 @@
 package game.client;
 
+import game.shared.EntityType;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -12,6 +13,7 @@ public class Sprite {
     private final double INTERP_CONSTANT = 0.95;
     private String name = "test";
     private Color color = Color.rgb(255,0,0,0.2);
+    private EntityType entityType;
     private int id;
     private boolean goUp = false;
     private boolean goDown = false;
@@ -29,6 +31,9 @@ public class Sprite {
     private double remoteAngle = 0;
     private int hp= 0;
 
+    public Sprite(EntityType et){
+        entityType = et;
+    }
     public String getName(){
         return name;
     }
@@ -102,8 +107,15 @@ public class Sprite {
         gc.translate(x +width/2,y + width/2);
         gc.rotate(Math.toDegrees(angle));
 
+        gc.setFill(Color.LIGHTBLUE);
+        if (entityType != EntityType.BULLET) gc.fillRect(0,-1,width/2,2);
         gc.setFill(color);
-        gc.fillRect(-width/2, -height/2, width, height);
+        if (entityType != EntityType.PLAYER && entityType != EntityType.BULLET){
+            gc.fillRect(-width/2, -height/2, width, height);
+        }else{
+            double radius = width/2;
+            gc.fillOval(-radius, -radius, 2* radius, 2*radius);
+        }
         //Draw name
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);

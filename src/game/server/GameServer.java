@@ -7,10 +7,7 @@ import game.shared.GameLoop;
 import game.server.net.ServerReceivePacketHandler;
 import game.shared.net.Message;
 import game.shared.net.NetManager;
-import game.shared.net.messages.EntityCreateMsg;
-import game.shared.net.messages.EntityDeleteMsg;
-import game.shared.net.messages.EntityStateMsg;
-import game.shared.net.messages.GameMapMsg;
+import game.shared.net.messages.*;
 
 import java.io.File;
 import java.util.*;
@@ -58,9 +55,16 @@ public class GameServer {
                         if (b.collides(p) && !((Bullet)b).getShotFrom().equals(p)){
                             p.setHp(p.getHp() - ((Bullet)b).getDamage());
                             if (p.getHp() == 0){
-                               p.setX(Math.random() * 800);
-                               p.setY(Math.random() * 800);
-                               p.setHp(100);
+                                do {
+                                    p.setX(Math.random() * gameMap.getWidth());
+                                    p.setY(Math.random() * gameMap.getHeight());
+                                }while(p.collides(gameMap.getWalls()));
+
+                                p.setHp(100);
+                                Entity shotFrom = ((Bullet) b).getShotFrom();
+                                int prevScore = ((Bullet)b).getShotFrom().getScore();
+                                ((Bullet) b).getShotFrom().setScore(prevScore + 1);
+                                nh.sendMessage(PlayerStateMsg.encode(shotFrom.getId(),prevScore + 1));
                             }
                         }
                     }
@@ -97,21 +101,17 @@ public class GameServer {
                             Then move in Y-direction; if it hit something, move back and stop y-velocity.
                      */
                     e.setX(x0 + e.getVx());
-                    if (gameMap != null) {
-                        for (Wall w : gameMap.getWalls()) {
-                            if (e.getEntityType() != EntityType.WALL && e.collides(w)) {
-                                e.setX(x0);
-                                e.setVx(0);
-                            }
+                    if(gameMap !=null) {
+                        if (e.getEntityType() != EntityType.WALL && e.collides(gameMap.getWalls())) {
+                            e.setX(x0);
+                            e.setVx(0);
                         }
                     }
                     e.setY(y0 + e.getVy());
                     if (gameMap != null) {
-                        for (Wall w : gameMap.getWalls()) {
-                            if (e.getEntityType() != EntityType.WALL && e.collides(w)) {
-                                e.setY(y0);
-                                e.setVy(0);
-                            }
+                        if (e.getEntityType() != EntityType.WALL && e.collides(gameMap.getWalls())){
+                            e.setY(y0);
+                            e.setVy(0);
                         }
                     }
                     if (e.getSendUpdates()){

@@ -1,8 +1,10 @@
 package game.server.net;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import game.server.GameServer;
 import game.server.model.Entity;
 import game.server.model.Player;
+import game.shared.net.PacketSuccessFailHandler;
 import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
@@ -10,6 +12,10 @@ import game.shared.net.Packet;
 import game.shared.net.messages.commands.ChangeAngleCommand;
 import game.shared.net.messages.commands.MoveCommand;
 import game.shared.net.messages.commands.SetShootingCommand;
+
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerReceivePacketHandler implements ReceivePacketHandler {
     private final GameServer gs;
@@ -37,22 +43,30 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
                     //Add the new player to the game
                     gs.addPlayer(playerNum, name);
                     //Send to other clients!
-                    //Notify other players of the new player
+                    List<Message> newPlayerMessages = new ArrayList<Message>();
+                    //Register the new player to all clients, then send the data that depends on playerNum
                     gs.getNetManager().sendMessage(LoginMsg.encode(name, playerNum));
+
                     //Notify the new player about old players
                     for (Player p : gs.getPlayerList()){
-                        gs.getNetManager().sendMessage(
-                                LoginMsg.encode(p.getName(),p.getId()),
-                                packet.getSocketAddress());
+                        newPlayerMessages.add(LoginMsg.encode(p.getName(),p.getId()));
                     }
                     //Notify the new player about old entities
                     for (Entity e : gs.getEntityList()){
-                        gs.getNetManager().sendMessage(EntityCreateMsg.encode(e.getId(),e.getEntityType(),e.getX(),e.getY(),e.getName()),
-                                packet.getSocketAddress());
-
+                        newPlayerMessages.add(EntityCreateMsg.encode(e.getId(),e.getEntityType(),e.getX(),e.getY(),e.getName()));
                     }
                     //Notify the new player about the map size
-                    gs.getNetManager().sendMessage(GameMapMsg.encode(gs.getMapWidth(),gs.getMapHeight()));
+                    newPlayerMessages.add(GameMapMsg.encode(gs.getMapWidth(),gs.getMapHeight()));
+                    //Notify the new player about player states
+                    for (Player p : gs.getPlayerList()) {
+                        newPlayerMessages.add(PlayerStateMsg.encode(p.getId(),p.getScore()));
+                    }
+                    //Send all messages
+                    gs.getNetManager().sendMessages(newPlayerMessages,packet.getSocketAddress());
+
+
+
+
                     break;
                 case LOGOUT:
                     playerNum = ((LogoutMsg) m).getPlayerNum();

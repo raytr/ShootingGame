@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 
 public class SpriteFactory {
     public static Sprite createSprite(EntityCreateMsg ecm){
-        Sprite newSprite = new Sprite();
+        Sprite newSprite = new Sprite(ecm.getEntityType());
         newSprite.setRemoteX(ecm.getX0());
         newSprite.setRemoteY(ecm.getY0());
         newSprite.setX(ecm.getX0());

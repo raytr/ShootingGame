@@ -8,6 +8,7 @@ import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
 import game.shared.net.Packet;
+import javafx.application.Platform;
 
 public class ClientReceivePacketHandler implements ReceivePacketHandler {
     final Game g;
@@ -75,7 +76,11 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                     GameMapMsg gmm = (GameMapMsg)m;
                     g.getPlayfield().setCanvasWidth(gmm.getWidth());
                     g.getPlayfield().setCanvasHeight(gmm.getHeight());
-
+                    break;
+                case PLAYER_STATE:
+                    PlayerStateMsg psm = (PlayerStateMsg)m;
+                    Player player = g.getPlayer(psm.getPlayerNum());
+                    player.setScore(psm.getScore());
 
                     break;
                 default:

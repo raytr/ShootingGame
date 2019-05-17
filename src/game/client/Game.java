@@ -7,8 +7,11 @@ import game.shared.net.PacketSuccessFailHandler;
 import game.shared.net.messages.CommandMsg;
 import game.shared.net.messages.LoginMsg;
 import game.shared.net.messages.LogoutMsg;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -29,12 +32,22 @@ public class Game {
     private final NetManager nh;
     private String username;
     private int playerNum = -1;
-    private ObservableList<Player> playerList = FXCollections.observableArrayList();
+    private ObservableList<Player> playerList = FXCollections.observableArrayList((p ->
+            new Observable[] {p.scoreProperty()}));
+
+
+    private PlayerTableView ptv;
     Player clientPlayer;
 
     public Game(InetSocketAddress serverAddr) {
         ClientReceivePacketHandler crph = new ClientReceivePacketHandler(this);
         nh = new NetManager(crph, serverAddr);
+        playerList.addListener(new ListChangeListener<Player>() {
+            @Override
+            public void onChanged(Change<? extends Player> c) {
+                System.out.println("SOMETHING CHANGED");
+            }
+        });
     }
 
     public void tryLogin(String name, PacketSuccessFailHandler onSuccess, PacketSuccessFailHandler onFailure) {
@@ -58,7 +71,7 @@ public class Game {
 
 
         //Set up right-hand side bar playerview and chat box
-        PlayerTableView ptv = new PlayerTableView(playerList);
+        ptv = new PlayerTableView(playerList);
         ptv.getTable().setPrefHeight(screenHeight/2);
         chatBox = new ChatBox(screenWidth/5,screenHeight/2,this,nh);
         VBox vbox = new VBox();
@@ -168,5 +181,8 @@ public class Game {
             }
         };
         nh.sendMessage(LogoutMsg.encode(playerNum), psfh, psfh);
+    }
+    public PlayerTableView getPtv(){
+        return ptv;
     }
 }

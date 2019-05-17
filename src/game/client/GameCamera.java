@@ -6,7 +6,7 @@ import javafx.scene.SubScene;
 
 public class GameCamera {
     private ParallelCamera pc;
-    private Sprite centerSprite = new Sprite();
+    private Sprite centerSprite = new Sprite(null);
     private double screenWidth;
     private double screenHeight;
 

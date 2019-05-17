@@ -2,6 +2,8 @@ package game.server.model;
 
 import game.shared.EntityType;
 
+import java.util.Collection;
+
 public abstract class Entity {
     protected String name = "";
     protected EntityType entityType;
@@ -20,6 +22,8 @@ public abstract class Entity {
     protected double width = 70;
     protected double height = 70;
     private double angle = 0;
+    private int score = 0;
+
     Entity(){
         entityCounter++;
         id += entityCounter;
@@ -108,6 +112,22 @@ public abstract class Entity {
     public boolean collides(Entity other){
         return collisionModel.collidesWith(other.getCollisionModel());
     }
+    public boolean collides(Collection<? extends Entity> entities){
+        for (Entity e : entities){
+            if (collisionModel.collidesWith(e.getCollisionModel())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected CollisionModel getCollisionModel(){return collisionModel;}
+
+    public void setScore(int i){
+        this.score = i;
+    }
+    public int getScore(){
+        return score;
+
+    }
 }
