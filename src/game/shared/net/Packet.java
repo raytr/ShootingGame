@@ -11,7 +11,7 @@ public class Packet {
     //Used if isReliable = true
     private int numAcks = 0;
     private int maxAcks = 5;
-    private int ackDelayMS = 50;
+    private int ackDelayMS = 5000;
     //CONTAINED IN PACKET HEADER
     private final boolean isReliable;
     private final int seqNum;
