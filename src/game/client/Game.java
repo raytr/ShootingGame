@@ -45,7 +45,7 @@ public class Game {
         playerList.addListener(new ListChangeListener<Player>() {
             @Override
             public void onChanged(Change<? extends Player> c) {
-                System.out.println("SOMETHING CHANGED");
+                //System.out.println("SOMETHING CHANGED");
             }
         });
     }

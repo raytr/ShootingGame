@@ -56,7 +56,7 @@ public class PlayerTableView {
 
 
         SortedList<Player> sortedPlayerList =  new SortedList<Player>(playerList,(Player p1,Player p2) -> {
-            System.out.println("WE IN HERE");
+            //System.out.println("WE IN HERE");
             if (p1.getScore() < p2.getScore()){
                 return 1;
             }else if (p1.getScore() > p2.getScore()){

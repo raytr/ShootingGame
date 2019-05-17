@@ -45,25 +45,32 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
                     //Send to other clients!
                     List<Message> newPlayerMessages = new ArrayList<Message>();
                     //Register the new player to all clients, then send the data that depends on playerNum
-                    gs.getNetManager().sendMessage(LoginMsg.encode(name, playerNum));
+                    gs.getNetManager().sendMessage(LoginMsg.encode(name, playerNum), new PacketSuccessFailHandler() {
+                        @Override
+                        public void run(InetSocketAddress addr) {
+                            //Notify the new player about old players
+                            for (Player p : gs.getPlayerList()){
+                                newPlayerMessages.add(LoginMsg.encode(p.getName(),p.getId()));
+                            }
+                            //Notify the new player about old entities
+                            for (Entity e : gs.getEntityList()){
+                                newPlayerMessages.add(EntityCreateMsg.encode(e.getId(),e.getEntityType(),e.getX(),e.getY(),e.getName()));
+                            }
+                            //Notify the new player about the map size
+                            newPlayerMessages.add(GameMapMsg.encode(gs.getMapWidth(),gs.getMapHeight()));
+                            //Notify the new player about player states
+                            for (Player p : gs.getPlayerList()) {
+                                newPlayerMessages.add(PlayerStateMsg.encode(p.getId(),p.getScore()));
+                            }
+                            //Send all messages
+                            gs.getNetManager().sendMessages(newPlayerMessages,packet.getSocketAddress());
 
-                    //Notify the new player about old players
-                    for (Player p : gs.getPlayerList()){
-                        newPlayerMessages.add(LoginMsg.encode(p.getName(),p.getId()));
-                    }
-                    //Notify the new player about old entities
-                    for (Entity e : gs.getEntityList()){
-                        newPlayerMessages.add(EntityCreateMsg.encode(e.getId(),e.getEntityType(),e.getX(),e.getY(),e.getName()));
-                    }
-                    //Notify the new player about the map size
-                    newPlayerMessages.add(GameMapMsg.encode(gs.getMapWidth(),gs.getMapHeight()));
-                    //Notify the new player about player states
-                    for (Player p : gs.getPlayerList()) {
-                        newPlayerMessages.add(PlayerStateMsg.encode(p.getId(),p.getScore()));
-                    }
-                    //Send all messages
-                    gs.getNetManager().sendMessages(newPlayerMessages,packet.getSocketAddress());
-
+                        }
+                    }, new PacketSuccessFailHandler() {
+                        @Override
+                        public void run(InetSocketAddress addr) {
+                        }
+                    });
 
 
 
