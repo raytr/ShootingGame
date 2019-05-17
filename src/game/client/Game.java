@@ -56,7 +56,7 @@ public class Game {
     }
 
     public void show(Stage stage) {
-        stage.setTitle("SHOOTER GAME CLIENT");
+        stage.setTitle("SHOOTER GAME! ");
         mainPane = new BorderPane();
 
         //Set up scene
