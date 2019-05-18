@@ -128,7 +128,7 @@ public class NetManager {
         return seqNum;
     }
 
-    Set<InetSocketAddress> getSendClients() {
+    public Set<InetSocketAddress> getSendClients() {
         return sendClients;
     }
 

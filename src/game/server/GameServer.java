@@ -50,10 +50,13 @@ public class GameServer {
 
                 addEntities(newBullets);
                 bulletList.addAll(newBullets);
+
+                List<Entity> toRemove = new ArrayList<Entity>();
                 for (Player p : playerNumPlayerMap.values()){
                     for (Entity b : bulletList){
                         if (b.collides(p) && !((Bullet)b).getShotFrom().equals(p)){
                             p.setHp(p.getHp() - ((Bullet)b).getDamage());
+                            toRemove.add(b);
                             if (p.getHp() == 0){
                                 do {
                                     p.setX(Math.random() * gameMap.getWidth());
@@ -74,7 +77,6 @@ public class GameServer {
                     if (p.getY() + p.getHeight() > gameMap.getHeight()) p.setY(gameMap.getHeight() - p.getHeight());
                 }
                 //Remove old entities
-                List<Entity> toRemove = new ArrayList<Entity>();
                 for (Entity b : bulletList){
                     if (Math.abs(b.getVx())<5 && Math.abs(b.getVy())< 5){
                         toRemove.add(b);

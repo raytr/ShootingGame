@@ -12,7 +12,7 @@ import javafx.scene.transform.Rotate;
 public class Sprite {
     private final double INTERP_CONSTANT = 0.95;
     private String name = "test";
-    private Color color = Color.rgb(255,0,0,0.2);
+    private Color color = Color.rgb(255,0,0,0.5);
     private EntityType entityType;
     private int id;
     private boolean goUp = false;

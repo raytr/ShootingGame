@@ -30,11 +30,14 @@ public class ServerReceivePacketHandler implements ReceivePacketHandler {
         for (Message m : packet.getMsgList()) {
 
             //Make sure to add this as a send client before trying to expect an ack back
-            gs.getNetManager().addSendClient(packet.getSocketAddress());
+            //gs.getNetManager().addSendClient(packet.getSocketAddress());
+            if(!gs.getNetManager().getSendClients().contains(packet.getSocketAddress()) && m.getMsgType() != MsgType.LOGIN){
+                continue;
+            }
             switch (m.getMsgType()) {
                 case LOGIN:
                     //Make sure to add this as a send client before trying to expect an ack back
-                    //gs.getNetManager().addSendClient(packet.getSocketAddress());
+                    gs.getNetManager().addSendClient(packet.getSocketAddress());
 
                     String name = ((LoginMsg) m).getName();
                     //Generate a new player num for this player
