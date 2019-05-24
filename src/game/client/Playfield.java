@@ -66,7 +66,9 @@ public class Playfield {
         if (canvasHeight != gameArea.getHeight()) gameArea.setHeight(canvasHeight);
         clear();
         for (Sprite s : spriteMap.values()){
-            s.draw(gc);
+            if (gameCamera.isVisible(s.getX(),s.getY(),s.getWidth(),s.getHeight())){
+                s.draw(gc);
+            }
         }
         createBorder();
         if (drawWinMsg){

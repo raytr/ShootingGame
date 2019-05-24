@@ -44,4 +44,9 @@ public class GameCamera {
     public double getScreenWidth() {
         return screenWidth;
     }
+
+    public boolean isVisible(double x, double y, double width, double height) {
+        return (x + width > this.getX() && x < (this.getX() + this.getScreenWidth())
+            && y + height > this.getY() && y < (this.getY() + this.getScreenHeight()));
+    }
 }
