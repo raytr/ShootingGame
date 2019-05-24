@@ -72,7 +72,6 @@ public class Playfield {
         }
         createBorder();
         if (drawWinMsg){
-            System.out.println("HELLO");
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);
             gc.setFill(Color.DARKORANGE);
