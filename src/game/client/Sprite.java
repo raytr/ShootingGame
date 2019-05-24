@@ -199,7 +199,7 @@ public class Sprite {
     public void setRemoteAngle(float angle) {
         this.remoteAngle = angle;
     }
-    public void setRGBColor(int r,int g, int b,int opacity){
+    public void setRGBColor(int r,int g, int b,double opacity){
         this.color = new Color(r,g,b,opacity);
     }
 }

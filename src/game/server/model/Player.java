@@ -8,7 +8,7 @@ public class Player extends Entity {
     private boolean moveLeft;
     private boolean moveRight;
     private boolean isShooting;
-    private int shootCooldownUpdateTicks = 10;
+    private volatile int shootCooldownUpdateTicks = 10;
 
 
     public Player(int playerNum, String name) {
@@ -78,6 +78,22 @@ public class Player extends Entity {
     }
     public boolean canShoot(){
         return isShooting && updateTicks % shootCooldownUpdateTicks == 0;
+    }
+
+    public int getShootCooldownUpdateTicks() {
+        return shootCooldownUpdateTicks;
+    }
+
+    public void setShootCooldownUpdateTicks(int s) {
+        s = Math.min(10,Math.max(s,1));
+        this.shootCooldownUpdateTicks = s;
+
+    }
+
+    @Override
+    public void setHp(int h){
+        hp = Math.min(h,125);
+        if (hp < 0) hp =0;
     }
     @Override
     public EntityType getEntityType(){

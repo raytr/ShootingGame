@@ -1,6 +1,7 @@
 package game.client;
 
 import game.shared.GameLoop;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.canvas.Canvas;
@@ -8,10 +9,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -25,9 +29,10 @@ public class Playfield {
     private GameCamera gameCamera = new GameCamera();
     private double width;
     private double height;
-    private double canvasWidth = 2000;
-    private double canvasHeight = 2000;
-    private GameLoop gameLoop;
+    private double canvasWidth = 1000;
+    private double canvasHeight = 1000;
+    private boolean drawWinMsg = false;
+    private String winningPlayer;
     private Game g;
     public Playfield(Game g){
         this.g = g;
@@ -46,9 +51,6 @@ public class Playfield {
         gameCamera.init(subScene,width,height);
         body = subScene;
 
-        //Start our gameLoop
-        gameLoop = new GameLoop(new ClientGameLoopRunnable(g,this),60);
-        gameLoop.start();
     }
     public void bindCameraToSprite(Sprite s){
         gameCamera.bindSprite(s);
@@ -63,9 +65,19 @@ public class Playfield {
         if (canvasWidth != gameArea.getWidth()) gameArea.setWidth(canvasWidth);
         if (canvasHeight != gameArea.getHeight()) gameArea.setHeight(canvasHeight);
         clear();
-        createBorder();
         for (Sprite s : spriteMap.values()){
             s.draw(gc);
+        }
+        createBorder();
+        if (drawWinMsg){
+            System.out.println("HELLO");
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setTextBaseline(VPos.CENTER);
+            gc.setFill(Color.DARKORANGE);
+            gc.setFont(Font.font ("Arial", 64));
+            gc.fillText(winningPlayer + " WON THE ROUND!",
+                    gameCamera.getScreenWidth()/2 + gameCamera.getX(),
+                    gameCamera.getScreenHeight()/2 + gameCamera.getY() - 100);
         }
     }
 
@@ -95,9 +107,6 @@ public class Playfield {
         return new ArrayList<>(spriteMap.values());
     }
 
-    public void stop() {
-        gameLoop.stopRunning();
-    }
 
     public Sprite getCameraBoundedSprite() {
         return gameCamera.getBoundedSprite();
@@ -116,5 +125,22 @@ public class Playfield {
 
     public void setCanvasWidth(float width) {
         canvasWidth = width;
+    }
+
+    public void displayWinMsg(Player p) {
+        drawWinMsg = true;
+        winningPlayer = p.getName();
+        Timer t = new java.util.Timer();
+            t.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            // close the thread
+                            drawWinMsg = false;
+                            t.cancel();
+                        }
+                    },
+                    5000
+            );
     }
 }

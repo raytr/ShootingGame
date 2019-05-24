@@ -37,4 +37,11 @@ public class GameCamera {
     public double getY() {
         return pc.getTranslateY();
     }
+
+    public double getScreenHeight() {
+        return screenHeight;
+    }
+    public double getScreenWidth() {
+        return screenWidth;
+    }
 }

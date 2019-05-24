@@ -66,6 +66,12 @@ public enum MsgType {
         public Message decode(byte[] bytes){
             return PlayerStateMsg.decode(bytes);
         }
+    },
+    PLAYER_WIN(9){
+        @Override
+        public Message decode(byte[] bytes){
+            return PlayerWinMsg.decode(bytes);
+        }
     };
 
 

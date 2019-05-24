@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum EntityType {
-    PLAYER(0),BULLET(1),WALL(2);
+    PLAYER(0),BULLET(1),WALL(2),HP_POWERUP(3),SHOT_POWERUP(4);
 
     private final int value;
     private static final Map<Integer, EntityType> map = new HashMap<Integer, EntityType>();

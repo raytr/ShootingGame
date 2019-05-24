@@ -19,9 +19,10 @@ public class GameServer {
     private int playerNumCounter = 0;
     private final int port;
     private List<Entity> entityList = new CopyOnWriteArrayList<>();
+    private List<Entity> powerUpList = new ArrayList<Entity>();
     private List<Entity> bulletList = new ArrayList<Entity>();
     private final Map<Integer, Player> playerNumPlayerMap = new HashMap<>();
-    private GameMap gameMap = new GameMap(new ArrayList<Entity>(),2000,2000);
+    private GameMap gameMap = new GameMap(new ArrayList<Entity>(),1000,1000);
 
     public GameServer(int port) {
         this.port = port;
@@ -34,9 +35,30 @@ public class GameServer {
         gl  = new GameLoop(new Runnable() {
             @Override
             public void run() {
+                //Check win condition
+                boolean winnerFound = false;
+                for (Player p : playerNumPlayerMap.values()){
+                    if (p.getScore() > 4){
+                        nh.sendMessage(PlayerWinMsg.encode(p.getId()));
+                        winnerFound = true;
+                        break;
+                    }
+                }
+                if (winnerFound) {
+                    for (Player p : playerNumPlayerMap.values()) {
+                        do {
+                            p.setX(Math.random() * gameMap.getWidth());
+                            p.setY(Math.random() * gameMap.getHeight());
+                        } while (p.collides(gameMap.getWalls()));
+                        p.setHp(100);
+                        p.setShootCooldownUpdateTicks(10);
+                        p.setScore(0);
+                    }
+                }
 
-                //Add new bullets
-                List<Entity> newBullets = new ArrayList<Entity>();
+
+                //Add new entities
+                List<Entity> newEntities = new ArrayList<Entity>();
                 for (Player p : playerNumPlayerMap.values()){
                     if (p.canShoot()){
                         Bullet b = new Bullet(p);
@@ -44,12 +66,22 @@ public class GameServer {
                         b.setVy(b.getVy() * Math.sin(p.getAngle()));
                         b.setX(p.getX() + p.getWidth()/2 - b.getWidth()/2);
                         b.setY(p.getY() + p.getHeight()/2 - b.getHeight()/2);
-                        newBullets.add(b);
+                        bulletList.add(b);
+                        newEntities.add(b);
                     }
                 }
+                while (powerUpList.size() < 5){
+                    double random = Math.random();
+                    Powerup myPowerup = random > 0.5 ? new HealthPowerup() : new ShotPowerup();
+                    do {
+                        myPowerup.setX(Math.random() * (gameMap.getWidth() - myPowerup.getWidth()) );
+                        myPowerup.setY(Math.random() * (gameMap.getHeight() - myPowerup.getHeight()) );
+                    }while(myPowerup.collides(gameMap.getWalls()));
+                    powerUpList.add(myPowerup);
+                    newEntities.add(myPowerup);
+                }
 
-                addEntities(newBullets);
-                bulletList.addAll(newBullets);
+                addEntities(newEntities);
 
                 List<Entity> toRemove = new ArrayList<Entity>();
                 for (Player p : playerNumPlayerMap.values()){
@@ -71,6 +103,16 @@ public class GameServer {
                             }
                         }
                     }
+
+                    for (Entity pw : powerUpList){
+                        if (pw.collides(p)){
+                            Powerup pwu = (Powerup) pw;
+                            pwu.applyEffect(p);
+                            toRemove.add(pw);
+                        }
+                        if (pw.getX() + pw.getWidth() > gameMap.getWidth()) pw.setX(gameMap.getWidth() - pw.getWidth());
+                        if (pw.getY() + pw.getHeight() > gameMap.getHeight()) pw.setY(gameMap.getHeight() - pw.getHeight());
+                    }
                     if (p.getX() < 0) p.setX(0);
                     if (p.getY() < 0) p.setY(0);
                     if (p.getX() + p.getWidth() > gameMap.getWidth()) p.setX(gameMap.getWidth() - p.getWidth());
@@ -82,12 +124,12 @@ public class GameServer {
                         toRemove.add(b);
                     }
                 }
+
                 bulletList.removeAll(toRemove);
+                powerUpList.removeAll(toRemove);
+
                 //Send entity remove messages
                 removeEntities(toRemove);
-
-
-
 
                 //Send entity state messages
                 List<Message> entityStateMsgs = new ArrayList<Message>();

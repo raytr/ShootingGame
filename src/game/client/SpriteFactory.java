@@ -27,6 +27,18 @@ public class SpriteFactory {
                 newSprite.setWidth(50);
                 newSprite.setHeight(50);
                 break;
+            case HP_POWERUP:
+                newSprite.setRGBColor(0,1,0,1);
+                newSprite.setName("HP");
+                newSprite.setWidth(50);
+                newSprite.setHeight(50);
+                break;
+            case SHOT_POWERUP:
+                newSprite.setRGBColor(0,0,1,0.4);
+                newSprite.setName("SHOT++");
+                newSprite.setWidth(50);
+                newSprite.setHeight(50);
+                break;
             default:
                 break;
         }

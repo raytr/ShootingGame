@@ -8,7 +8,6 @@ import game.shared.net.ReceivePacketHandler;
 import game.shared.net.messages.*;
 import game.shared.net.Message;
 import game.shared.net.Packet;
-import javafx.application.Platform;
 
 public class ClientReceivePacketHandler implements ReceivePacketHandler {
     final Game g;
@@ -47,7 +46,8 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                 case CHAT_MESSAGE:
                     playerNum = ((ChatMsg) m).getPlayerNum();
                     String msg = ((ChatMsg) m).getMsg();
-                    g.getChatBox().addMsg(playerNum, msg, false);
+                    if (playerNum != -1)g.getChatBox().addMsg(playerNum, msg, false);
+                    else g.getChatBox().addMsg(playerNum, msg, true);
                     break;
                 case ENTITY_CREATE:
                     EntityCreateMsg ecm = (EntityCreateMsg) m;
@@ -81,6 +81,10 @@ public class ClientReceivePacketHandler implements ReceivePacketHandler {
                     PlayerStateMsg psm = (PlayerStateMsg)m;
                     Player player = g.getPlayer(psm.getPlayerNum());
                     player.setScore(psm.getScore());
+                    break;
+                case PLAYER_WIN:
+                    PlayerWinMsg pwm = (PlayerWinMsg)m;
+                    g.getPlayfield().displayWinMsg(g.getPlayer(pwm.getPlayerNum()));
 
                     break;
                 default:

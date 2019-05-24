@@ -1,6 +1,7 @@
 package game.client;
 
 import game.client.net.ClientReceivePacketHandler;
+import game.shared.GameLoop;
 import game.shared.net.NetManager;
 import game.shared.net.Packet;
 import game.shared.net.PacketSuccessFailHandler;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class Game {
     private Playfield playfield = new Playfield(this);
+    private GameLoop gameLoop;
     private BorderPane mainPane;
     private ChatBox chatBox;
     private final NetManager nh;
@@ -93,6 +95,11 @@ public class Game {
                 mainPane.requestFocus();
             }
         });
+
+        //Start our gameLoop
+        gameLoop = new GameLoop(new ClientGameLoopRunnable(this,playfield),60);
+        gameLoop.start();
+
         stage.setScene(scene);
         stage.show();
 
@@ -127,17 +134,6 @@ public class Game {
 
         playerList.add(newPlayer);
         return newPlayer;
-        /*
-        Sprite newSprite = new Sprite();
-        newSprite.setName(newPlayer.getName());
-        newSprite.setId(newPlayer.getPlayerId());
-        newPlayer.setSprite(newSprite);
-        playfield.addSprite(newSprite);
-        if (playerNum == this.getPlayerNum()){
-            playfield.bindCameraToSprite(newSprite);
-        }
-
-         */
 
     }
     public Player getClientPlayer(){
@@ -176,7 +172,7 @@ public class Game {
         PacketSuccessFailHandler psfh = new PacketSuccessFailHandler() {
             @Override
             public void run(InetSocketAddress addr) {
-                playfield.stop();
+                gameLoop.stopRunning();
                 nh.stop();
             }
         };
