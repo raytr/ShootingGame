@@ -23,7 +23,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.net.Inet4Address;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public class GameLauncher extends Application {
     private GridPane grid;
@@ -96,7 +98,7 @@ public class GameLauncher extends Application {
 
         Label errMsg2 = new Label("");
         errMsg2.setFont(Font.font("Arial", 12));
-        grid.add(errMsg2, 6, 4);
+        grid.add(errMsg2, 6, 5);
         // Set font color for the Label.
         errMsg2.setTextFill(Color.rgb(255, 0, 0));
 
@@ -159,6 +161,11 @@ public class GameLauncher extends Application {
                         btn2.setText("Stop server");
                         portField2.setDisable(true);
                         btn3.setDisable(false);
+                        try {
+                            errMsg2.setText("Server running on: " +Inet4Address.getLocalHost().getHostAddress());
+                        }catch (UnknownHostException t){
+                            //lol
+                        }
                     } else {
                         gameServer.stop();
                         btn2.setText("Make a server");
